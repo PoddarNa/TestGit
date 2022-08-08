@@ -3,7 +3,7 @@
 <RootStep id="_0" name="root" version="4.7.2">
   <include>qfs.qft</include>
   <include>auto_master_2.qft</include>
-  <variable name="dutIP">10.77.240.108</variable>
+  <variable name="dutIP">10.77.240.5</variable>
   <variable name="input_port">4/5</variable>
   <variable name="output_port">4/4</variable>
   <variable name="stream">Doremi_1080i50_dd.ts</variable>
