@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE RootStep>
-<RootStep id="_0" name="root" version="4.0.5">
+<RootStep id="_0" name="root" version="4.7.2">
   <include>qfs.qft</include>
   <include>auto_master_2.qft</include>
   <variable name="dutIP">10.77.240.5</variable>
@@ -16,7 +16,7 @@
   <variable name="Resolution">720x480i29.97</variable>
   <variable name="Audio_Channel">1-2</variable>
   <DependencyReference id="_22cB" reference="GUI.Dependencies.sutStarted"/>
-  <TestSet id="_2Cw2" name="Prerequisite-Check">
+  <TestSet disabled="true" id="_2Cw2" name="Prerequisite-Check">
     <TestCase id="_25MJ" name="Pre-requisite Check">
       <ProcedureCall id="_2D7g"
                      procedure="GUI.Pre_Requisite.Checking_for_Pre-requisite">
@@ -57,7 +57,8 @@
     </TestCase>
   </TestSet>
   <TestSet id="_25MF" name="Configuration">
-    <TestCase id="_25JJ" name="Play the stream with 480i59_94_ts resolution">
+    <TestCase disabled="true" id="_25JJ"
+              name="Play the stream with 480i59_94_ts resolution">
       <ProcedureCall id="_25JK"
                      procedure="Tools.DektecStreamer.Start_SI_Streamer"
                      retvarname="ip_udp5">
@@ -75,7 +76,7 @@ rc.setGlobal("ip_address5",ip)
 rc.setGlobal("udp5",udp)</code>
       </ServerScriptStep>
     </TestCase>
-    <TestCase id="_25JM" name="Create an input Mux">
+    <TestCase disabled="true" id="_25JM" name="Create an input Mux">
       <Test id="_25JN" name="Create an input mux">
         <ProcedureCall id="_25JO" procedure="GUI.MuxTab.Create_Gige_Input_Mux"
                        retvarname="input_muxid">
@@ -215,7 +216,7 @@ rc.setGlobal("outmuxID", current_value[1])</code>
         </IfSequence>
       </Test>
     </TestCase>
-    <TestCase id="_2TAI" name="Groom">
+    <TestCase disabled="true" id="_2TAI" name="Groom">
       <Test id="_2Mlt" name="Get Video and Audio Input PID ">
         <ProcedureCall id="_2Mlu" procedure="XML.Connect_xml"
                        retvarname="Session">
@@ -332,7 +333,7 @@ rc.setGlobal("outmuxID", current_value[1])</code>
       </TestStep>
     </TestCase>
   </TestSet>
-  <TestSet id="_25NN" name="Validating the test case">
+  <TestSet disabled="true" id="_25NN" name="Validating the test case">
     <TestCase id="_25NO"
               name="3295 SD - VES Bitrate settings - 480i59 94 Input PHigh">
       <Test id="_2TII" name="UDP">
@@ -979,7 +980,7 @@ rc.setGlobal("VES_bitrate3",TS_rate_list[3])</code>
       </Test>
     </TestCase>
   </TestSet>
-  <TestSet id="_24B4" name="Cleaning the ME-7000 at the end">
+  <TestSet disabled="true" id="_24B4" name="Cleaning the ME-7000 at the end">
     <TestCase id="_25W5" name="Negative Testing">
       <TestStep id="_25ON" name="Disable/Un-check VES bit rate">
         <ProcedureCall id="_2BA-"
