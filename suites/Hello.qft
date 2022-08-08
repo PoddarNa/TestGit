@@ -1,1 +1,225 @@
-print"Helloworld"
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE RootStep>
+<RootStep id="_0" name="root" version="4.7.2">
+  <include>qfs.qft</include>
+  <include>auto_master_2.qft</include>
+  <variable name="dutIP">10.77.240.108</variable>
+  <variable name="input_port">4/5</variable>
+  <variable name="output_port">4/4</variable>
+  <variable name="stream">Doremi_1080i50_dd.ts</variable>
+  <variable name="Ethernet_Board">Board 4</variable>
+  <variable name="Host_IP">10.77.240.150</variable>
+  <variable name="audio_lead_tolerance">16</variable>
+  <variable name="audio_lag_tolerance">16</variable>
+  <variable name="AVSync_IP">10.77.190.60</variable>
+  <variable name="AVSync_username">pqalab</variable>
+  <variable name="AVSync_password">VCP@2450</variable>
+  <DependencyReference id="_22cB" reference="GUI.Dependencies.sutStarted"/>
+  <TestSet disabled="true" id="_25Mh" name="Prerequisite-Check">
+    <TestCase id="_25MJ" name="Pre-requisite Check">
+      <ProcedureCall id="_2D7g"
+                     procedure="GUI.Pre_Requisite.Checking_for_Pre-requisite">
+        <variable name="Input_Port_Active">$(output_port)</variable>
+        <variable name="MPEG_enabled">$(output_port)</variable>
+        <variable name="License">MPEG-4/2</variable>
+      </ProcedureCall>
+    </TestCase>
+    <TestCase id="_2DcX"
+              name="Checking if ENC board is enabled  If not enable it">
+      <ProcedureCall id="_2D7i"
+                     procedure="GUI.SetupTab.DeviceTab.Get_ENCBoard_Mode"
+                     retvarname="status_value"/>
+      <IfSequence id="_2D7j"
+                  test="&#34;$(status_value)&#34; == &#34;Disabled&#34;">
+        <ProcedureCall id="_2D7k" procedure="Miscellaneous.Test_Comment">
+          <variable name="message">ENC board is disabled. Need to enable it</variable>
+        </ProcedureCall>
+        <ProcedureCall id="_2D7l"
+                       procedure="GUI.SetupTab.DeviceTab.Edit_ENCBoard_Status"
+                       retvarname="return_value">
+          <variable name="Status">HVQM</variable>
+        </ProcedureCall>
+        <IfSequence id="_2D7m"
+                    test="&#34;$(return_value)&#34; == &#34;Fail&#34;">
+          <ProcedureCall id="_2RQR" procedure="Miscellaneous.Test_Comment">
+            <variable name="message">ENC board was not enabled</variable>
+          </ProcedureCall>
+          <ProcedureCall id="_2DFt"
+                         procedure="Miscellaneous.QFT.Abort_Script"/>
+        </IfSequence>
+        <ElseSequence id="_2DFu">
+          <ProcedureCall id="_2DFv" procedure="Miscellaneous.Test_Comment">
+            <variable name="message">It is enabled</variable>
+          </ProcedureCall>
+        </ElseSequence>
+      </IfSequence>
+    </TestCase>
+  </TestSet>
+  <TestSet id="_2Evx"
+           name="3916 1080i50 Input - CBR(AVC only) Output with Encode Audio PHigh">
+    <TestCase id="_2Evw"
+              name="3916 1080i50 Input - CBR(AVC only) Output with Encode Audio PHigh">
+      <Test id="_2EqH" name="Configuration">
+        <TestStep id="_2MVX" name="Create an input Mux">
+          <BasicSequence id="_25JN" name="Create an input mux">
+            <ProcedureCall id="_25JO"
+                           procedure="GUI.MuxTab.Create_Gige_Input_Mux"
+                           retvarname="input_muxid">
+              <variable name="Input_Line">$(input_port)</variable>
+              <variable name="Mux_Name"/>
+              <variable name="IP_Address">239.0.55.1</variable>
+              <variable name="UDP_Port">5724</variable>
+              <variable name="Source_IP_Filter"/>
+              <variable name="Number_Of_Mux"/>
+              <variable name="Port_Increment"/>
+              <variable name="Last_Octet_Increment">True</variable>
+              <variable name="Mux_Type">AUTO</variable>
+              <variable name="Board">$(Ethernet_Board)</variable>
+            </ProcedureCall>
+          </BasicSequence>
+        </TestStep>
+        <TestStep id="_25KN" name="Create an output Mux">
+          <BasicSequence id="_25KO" name="Create an Output Mux">
+            <ProcedureCall id="_27-B"
+                           procedure="Miscellaneous.Random_Multicast_IP"
+                           retvarname="ip_multicast1"/>
+            <ProcedureCall id="_27-C" procedure="Miscellaneous.Random_UDP"
+                           retvarname="udp1"/>
+            <ProcedureCall id="_29we"
+                           procedure="Miscellaneous.Random_Multicast_IP"
+                           retvarname="ip_multicast2"/>
+            <ProcedureCall id="_29wf" procedure="Miscellaneous.Random_UDP"
+                           retvarname="udp2"/>
+            <ProcedureCall id="_29wg"
+                           procedure="Miscellaneous.Random_Multicast_IP"
+                           retvarname="ip_multicast3"/>
+            <ProcedureCall id="_29wh" procedure="Miscellaneous.Random_UDP"
+                           retvarname="udp3"/>
+            <ProcedureCall id="_29wd"
+                           procedure="GUI.Output Groups.CBR.Add_Group"
+                           retvarname="outputmuxid1">
+              <variable name="Config_File">CBR_ATSC_Group_1_ConfigFile.xml</variable>
+              <variable name="Group_Number">0</variable>
+              <variable name="Output_Port">$(output_port)</variable>
+              <variable name="Main_IP_Address">$(ip_multicast1)</variable>
+              <variable name="Main_UDP_Port">$(udp1)</variable>
+              <variable name="Mode"/>
+              <variable name="Total_Rate">10</variable>
+              <variable name="Reserved_Rate">0.5</variable>
+              <variable name="Data_Overhead"/>
+              <variable name="Null_Padding"/>
+              <variable name="Tagging"/>
+              <variable name="DSCP"/>
+              <variable name="RTP"/>
+              <variable name="TTL"/>
+              <variable name="MPEG_OUT"/>
+              <variable name="Packet"/>
+              <variable name="SDT"/>
+              <variable name="Alternate_Mux">true</variable>
+              <variable name="Alternate_Output_Port">$(output_port)</variable>
+              <variable name="Alternate_IPAddress">$(ip_multicast2)</variable>
+              <variable name="Alternate_UDP_Port">$(udp2)</variable>
+              <variable name="Alternate_Mode"/>
+              <variable name="Alternate_Total_Rate">10</variable>
+              <variable name="Alternate_Reserved_Rate">0.5</variable>
+              <variable name="Alternate_Data_Overhead"/>
+              <variable name="Alternate_Null_Padding"/>
+              <variable name="Alternate_Tagging"/>
+              <variable name="Alternate_DSCP"/>
+              <variable name="Alternate_RTP"/>
+              <variable name="Alternate_TTL"/>
+              <variable name="Alternate_MPEG_OUT"/>
+              <variable name="Alternate_Packet"/>
+              <variable name="Alternate_SDT"/>
+              <variable name="Proxy_Mux">true</variable>
+              <variable name="Proxy_Output_Port">$(output_port)</variable>
+              <variable name="Proxy_IPAddress">$(ip_multicast3)</variable>
+              <variable name="Proxy_UDP_Port">$(udp3)</variable>
+              <variable name="Proxy_Mode"/>
+              <variable name="Proxy_Total_Rate">0.5</variable>
+              <variable name="Proxy_Reserved_Rate">0.1</variable>
+              <variable name="Proxy_Data_Overhead"/>
+              <variable name="Proxy_Null_Padding"/>
+              <variable name="Proxy_Tagging"/>
+              <variable name="Proxy_DSCP"/>
+              <variable name="Proxy_RTP"/>
+              <variable name="Proxy_TTL"/>
+              <variable name="Proxy_MPEG_OUT"/>
+              <variable name="Proxy_Packet"/>
+              <variable name="Proxy_SDT"/>
+            </ProcedureCall>
+            <ServerScriptStep id="_29wk">
+              <code>Muxid=rc.lookup("outputmuxid1")
+mux_ids=Muxid.split(" ")
+main_mux_id=mux_ids[0]
+altermux=mux_ids[1]
+group_name=mux_ids[3]
+
+
+mux_ids=main_mux_id.split("_")
+Main_ID=mux_ids[1]
+rc.setGlobal("Main_ID",Main_ID)
+
+rc.setGlobal("outputmuxid1",main_mux_id)
+rc.setGlobal("altermux1",altermux)
+rc.setGlobal("Group_Name",group_name)</code>
+            </ServerScriptStep>
+          </BasicSequence>
+        </TestStep>
+        <TestStep id="_28tj" name="Groom input program to output">
+          <ProcedureCall id="_2RFy"
+                         procedure="GUI.ProcessingTab.ProgramGroom">
+            <variable name="Output_Line">$(output_port)</variable>
+            <variable name="Output_Muxid">$(outputmuxid1)</variable>
+            <variable name="Input_Port_Primary">$(input_port)</variable>
+            <variable name="Input_MuxID_Primary">$(input_muxid)</variable>
+            <variable name="Input_Program">$(input_port)_7018</variable>
+            <variable name="Input_Port_Backup"/>
+            <variable name="Input_Mux_ID_Backup"/>
+            <variable name="Input_Backup_Program"/>
+            <variable name="Input_Slate">Standard Video Files</variable>
+            <variable name="Input_Slate_FileName"/>
+            <variable name="Board">$(Ethernet_Board)</variable>
+          </ProcedureCall>
+          <ProcedureCall id="_28tl"
+                         procedure="GUI.ProcessingTab.Click_Apply"/>
+        </TestStep>
+      </Test>
+    </TestCase>
+  </TestSet>
+  <TestSet id="_2RQD" name="Cleaning the ME-7000 at the end">
+    <TestCase id="_2RQE" name="Cleaning the ME-7000 at the end">
+      <Test id="_2RQF" maxerror="0" name="Clean the ME">
+        <TestStep id="_2RQG" name="Delete grooming and output mux">
+          <ProcedureCall id="_2RQH" postdelay="30000"
+                         procedure="GUI.ProcessingTab.Delete_Grooming_Definition">
+            <variable name="Output_Line">$(output_port)</variable>
+            <variable name="Output_Mux_ID">$(outputmuxid1)</variable>
+            <variable name="Delete_Primary_Grooming">Yes</variable>
+            <variable name="Delete_Backup1_Grooming"/>
+            <variable name="Delete_Backup2_Grooming"/>
+          </ProcedureCall>
+          <ProcedureCall id="_2RQI"
+                         procedure="GUI.Output Groups.CBR.Delete_Group">
+            <variable name="Main_MuxID">$(Main_ID)</variable>
+          </ProcedureCall>
+        </TestStep>
+        <TestStep id="_2RQJ" name="Delete input mux and release stream"
+                  predelay="10000">
+          <ProcedureCall id="_2RQL"
+                         procedure="GUI.MuxTab.Delete_Gige_Input_Mux">
+            <variable name="Gig_Port">$(input_port)</variable>
+            <variable name="Mux_ID">$(input_muxid)</variable>
+            <variable name="Board">$(Ethernet_Board)</variable>
+          </ProcedureCall>
+        </TestStep>
+      </Test>
+      <Test id="_2RQM" name="Closing the ME-7000">
+        <ProcedureCall id="_2RQN" procedure="GUI.Clean_Up"/>
+      </Test>
+    </TestCase>
+  </TestSet>
+  <PackageRoot id="_3"/>
+  <ExtraSequence id="_4"/>
+  <WindowList id="_5"/>
+</RootStep>
